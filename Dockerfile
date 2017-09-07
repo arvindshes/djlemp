@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV NGINX_VERSION 1.13.3-1~stretch
 ENV NJS_VERSION   1.13.3.0.1.11-1~stretch
 ENV PHP_ROOT_DIR /app
-ENV PHP_VERSION 7.0
+ENV PHP_VERSION 7.1
 ENV MYSQL_MAJOR 5.7
 ENV MYSQL_VERSION 5.7.19-1debian9
 ENV MYSQL_ROOT_PASSWORD my-secret-pw
@@ -32,7 +32,15 @@ RUN apt-get update && apt-get install --no-install-recommends \
     curl                        \
     git                         \
     nginx                       \
-    gettext-base
+    gettext-base                \
+    apt-transport-https         \
+    lsb-release
+    #remove the last two after replacing php with official version
+
+ADD https://packages.sury.org/php/apt.gpg /etc/apt/trusted.gpg.d/php.gpg
+RUN chmod 555 /etc/apt/trusted.gpg.d/php.gpg
+RUN echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee \
+    /etc/apt/sources.list.d/php.list
 
 COPY tools/mysql_pubkey.asc /mysql_pubkey.asc
 RUN set -ex; \
