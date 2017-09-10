@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ENV NGINX_VERSION 1.13.3-1~stretch
 ENV NJS_VERSION   1.13.3.0.1.11-1~stretch
-ENV PHP_ROOT_DIR /app
+ENV PHP_ROOT_DIR /app/public_html
 ENV PHP_VERSION 7.1
 ENV MYSQL_MAJOR 5.7
 ENV MYSQL_VERSION 5.7.19-1debian9
@@ -99,7 +99,8 @@ COPY tools/adminer-*.php ${PHP_ROOT_DIR}/adminer/index.php
 COPY tools/nginx.conf /etc/nginx/sites-available/default
 COPY tools/php-fpm.conf /etc/php/${PHP_VERSION}/fpm/pool.d/www
 
-RUN chmod 644 ${PHP_ROOT_DIR}/adminer/index.php
+RUN chown -R root:www-data ${PHP_ROOT_DIR}
+RUN chmod -R 777 ${PHP_ROOT_DIR}
 RUN php ${PHP_ROOT_DIR}/composer-setup.php --install-dir=/usr/bin \
     --filename=composer && rm ${PHP_ROOT_DIR}/composer-setup.php
 
